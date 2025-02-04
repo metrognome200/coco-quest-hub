@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Tasks from "./pages/Tasks";
 import Betting from "./pages/Betting";
 import Leaderboard from "./pages/Leaderboard";
+import Tap from "./pages/Tap";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/tasks" element={<Tasks />} />
             <Route path="/betting" element={<Betting />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/tap" element={<Tap />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Navigation />
