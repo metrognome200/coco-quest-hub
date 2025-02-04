@@ -1,52 +1,33 @@
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Target, Coins, Trophy } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { TonConnectButton, useTonConnect, useTonWallet } from '@tonconnect/ui-react';
+import { useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useState, useEffect } from "react";
 
 const Index = () => {
   const { toast } = useToast();
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
-  const [isConnecting, setIsConnecting] = useState(false);
+  const { wallet } = useTonWallet();
+  const { connected } = useTonConnect();
 
-  const connectWallet = async () => {
-    setIsConnecting(true);
-    try {
-      // This is a placeholder for actual TON wallet connection
-      // You would need to implement the actual TON wallet connection logic here
-      const address = "Sample TON Address"; // Replace with actual wallet connection
-      setWalletAddress(address);
+  useEffect(() => {
+    if (connected && wallet) {
       toast({
         title: "Wallet Connected",
-        description: "Successfully connected to TON wallet",
+        description: `Connected to ${wallet.name}`,
       });
-    } catch (error) {
-      toast({
-        title: "Connection Failed",
-        description: "Failed to connect to TON wallet",
-        variant: "destructive",
-      });
-    } finally {
-      setIsConnecting(false);
     }
-  };
+  }, [connected, wallet, toast]);
 
   return (
     <div className="container max-w-lg mx-auto px-4 py-4 sm:py-8">
-      {!walletAddress ? (
-        <div className="mb-8">
-          <Button 
-            onClick={connectWallet} 
-            disabled={isConnecting}
-            className="w-full sm:w-auto"
-          >
-            {isConnecting ? "Connecting..." : "Connect TON Wallet"}
-          </Button>
-        </div>
-      ) : (
-        <div className="mb-8 text-sm text-muted-foreground">
-          Connected: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+      <div className="mb-8 flex justify-center">
+        <TonConnectButton />
+      </div>
+      
+      {connected && wallet && (
+        <div className="mb-8 text-sm text-muted-foreground text-center">
+          Connected: {wallet.account.address.slice(0, 6)}...{wallet.account.address.slice(-4)}
         </div>
       )}
       
