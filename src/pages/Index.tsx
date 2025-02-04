@@ -1,23 +1,23 @@
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Target, Coins, Trophy } from "lucide-react";
-import { TonConnectButton, useTonConnect, useTonWallet } from '@tonconnect/ui-react';
+import { TonConnectButton, useTonConnectUI } from '@tonconnect/ui-react';
 import { useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const { toast } = useToast();
-  const { wallet } = useTonWallet();
-  const { connected } = useTonConnect();
+  const [tonConnectUI] = useTonConnectUI();
+  const wallet = tonConnectUI.wallet;
 
   useEffect(() => {
-    if (connected && wallet) {
+    if (wallet) {
       toast({
         title: "Wallet Connected",
-        description: `Connected to ${wallet.name}`,
+        description: `Connected to ${wallet.device.appName}`,
       });
     }
-  }, [connected, wallet, toast]);
+  }, [wallet, toast]);
 
   return (
     <div className="container max-w-lg mx-auto px-4 py-4 sm:py-8">
@@ -25,7 +25,7 @@ const Index = () => {
         <TonConnectButton />
       </div>
       
-      {connected && wallet && (
+      {wallet && (
         <div className="mb-8 text-sm text-muted-foreground text-center">
           Connected: {wallet.account.address.slice(0, 6)}...{wallet.account.address.slice(-4)}
         </div>
