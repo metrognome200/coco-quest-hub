@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,39 +31,50 @@ const Betting = () => {
   
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 sm:py-16">
-      <h1 className="text-2xl font-bold mb-6">Active Bets</h1>
+      <h1 className="text-2xl font-bold mb-6">Games</h1>
       
       <div className="grid gap-4">
         {BETS.map((bet) => (
-          <Card key={bet.id} className="p-4">
+          <Card 
+            key={bet.id} 
+            className="p-4 border-2 border-primary/20 hover:border-primary/40 transition-colors duration-200"
+          >
             <div className="space-y-4">
               <div>
                 <h3 className="font-semibold">{bet.title}</h3>
                 <p className="text-sm text-muted-foreground">{bet.description}</p>
               </div>
               
-              <div className="flex items-center justify-between text-sm">
-                <span>Pool: {bet.pool} $COCO</span>
-                <span>Ends in: {bet.endTime}</span>
+              <div className="flex items-center justify-between text-sm border-t border-primary/10 pt-4">
+                <span className="text-primary">Pool: {bet.pool} $COCO</span>
+                <span className="text-muted-foreground">Ends in: {bet.endTime}</span>
               </div>
               
               {selectedBet === bet.id ? (
-                <div className="space-y-2">
+                <div className="space-y-2 border-t border-primary/10 pt-4">
                   <Input
                     type="number"
                     placeholder={`Enter amount (${bet.minBet}-${bet.maxBet})`}
                     value={betAmount}
                     onChange={(e) => setBetAmount(e.target.value)}
+                    className="border-primary/20 focus:border-primary"
                   />
                   <div className="flex gap-2">
-                    <Button className="w-full" variant="outline" onClick={() => setSelectedBet(null)}>
+                    <Button 
+                      className="w-full" 
+                      variant="outline" 
+                      onClick={() => setSelectedBet(null)}
+                    >
                       Cancel
                     </Button>
                     <Button className="w-full">Place Bet</Button>
                   </div>
                 </div>
               ) : (
-                <Button className="w-full" onClick={() => setSelectedBet(bet.id)}>
+                <Button 
+                  className="w-full mt-2" 
+                  onClick={() => setSelectedBet(bet.id)}
+                >
                   Bet Now
                 </Button>
               )}
