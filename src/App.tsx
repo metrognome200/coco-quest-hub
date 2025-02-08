@@ -13,7 +13,7 @@ import Tap from "./pages/Tap";
 import NotFound from "./pages/NotFound";
 
 // This is your app's manifest URL
-const manifestUrl = 'https://raw.githubusercontent.com/ton-community/tutorials/main/03-wallet/test/public/tonconnect-manifest.json';
+const manifestUrl = 'raw.githubusercontent.com/metrognome200/metrognome200.github.io/refs/heads/main/tonconnect-manifest.json';
 
 const queryClient = new QueryClient();
 
