@@ -1,7 +1,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Clock } from "lucide-react";
+import { CheckCircle, Clock, Check } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -12,6 +12,7 @@ interface Task {
   reward: number;
   completed: boolean;
   lastCompletedAt?: number;
+  loading?: boolean;
 }
 
 const INITIAL_TASKS: Task[] = [
@@ -110,7 +111,7 @@ const Tasks = () => {
   };
 
   const handleTaskAction = async (taskId: number) => {
-    // Simulate loading state
+    // Set loading state
     setTasks(prevTasks =>
       prevTasks.map(task =>
         task.id === taskId ? { ...task, loading: true } : task
@@ -122,12 +123,21 @@ const Tasks = () => {
 
     await completeTask(taskId);
 
-    // Remove loading state
+    // Show completed state temporarily
     setTasks(prevTasks =>
       prevTasks.map(task =>
-        task.id === taskId ? { ...task, loading: false } : task
+        task.id === taskId ? { ...task, loading: false, justCompleted: true } : task
       )
     );
+
+    // After 1.5 seconds, show the CheckCircle icon
+    setTimeout(() => {
+      setTasks(prevTasks =>
+        prevTasks.map(task =>
+          task.id === taskId ? { ...task, justCompleted: false } : task
+        )
+      );
+    }, 1500);
   };
 
   return (
@@ -146,18 +156,23 @@ const Tasks = () => {
               
               {task.completed ? (
                 <CheckCircle className="w-6 h-6 text-primary" />
+              ) : task.loading ? (
+                <Button size="sm" className="shrink-0" disabled>
+                  <Clock className="w-4 h-4 mr-2 animate-spin" />
+                  Working...
+                </Button>
+              ) : task.justCompleted ? (
+                <Button size="sm" className="shrink-0 bg-green-500" disabled>
+                  <Check className="w-4 h-4 mr-2" />
+                  Completed!
+                </Button>
               ) : (
                 <Button 
                   size="sm" 
                   className="shrink-0"
                   onClick={() => handleTaskAction(task.id)}
-                  disabled={task.loading}
                 >
-                  {task.loading ? (
-                    <Clock className="w-4 h-4 mr-2 animate-spin" />
-                  ) : (
-                    <Clock className="w-4 h-4 mr-2" />
-                  )}
+                  <Clock className="w-4 h-4 mr-2" />
                   Go
                 </Button>
               )}
