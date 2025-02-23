@@ -1,10 +1,19 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
-const BETS = [
+interface Bet {
+  id: number;
+  title: string;
+  description: string;
+  pool: number;
+  minBet: number;
+  maxBet: number;
+  endTime: string;
+}
+
+const BETS: Bet[] = [
   {
     id: 1,
     title: "Price Above 100",
@@ -28,11 +37,28 @@ const BETS = [
 const Betting = () => {
   const [selectedBet, setSelectedBet] = useState<number | null>(null);
   const [betAmount, setBetAmount] = useState("");
-  
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  const handlePlaceBet = () => {
+    if (selectedBet !== null) {
+      const bet = BETS.find((bet) => bet.id === selectedBet);
+      if (bet && (Number(betAmount) < bet.minBet || Number(betAmount) > bet.maxBet)) {
+        setError(`Bet amount must be between ${bet.minBet} and ${bet.maxBet}`);
+        return;
+      }
+      setError(null);
+      setSuccess(`Bet of ${betAmount} $COCO placed successfully on "${bet?.title}"`);
+      setSelectedBet(null);
+      setBetAmount("");
+    }
+  };
+
   return (
     <div className="container max-w-lg mx-auto px-4 py-8 sm:py-16">
       <h1 className="text-2xl font-bold mb-6">Games</h1>
-      
+      {error && <div className="text-red-500 mb-4">{error}</div>}
+      {success && <div className="text-green-500 mb-4">{success}</div>}
       <div className="grid gap-4">
         {BETS.map((bet) => (
           <Card 
@@ -58,6 +84,7 @@ const Betting = () => {
                     value={betAmount}
                     onChange={(e) => setBetAmount(e.target.value)}
                     className="border-primary/20 focus:border-primary"
+                    aria-label={`Enter bet amount for ${bet.title}`}
                   />
                   <div className="flex gap-2">
                     <Button 
@@ -67,13 +94,14 @@ const Betting = () => {
                     >
                       Cancel
                     </Button>
-                    <Button className="w-full">Place Bet</Button>
+                    <Button className="w-full" onClick={handlePlaceBet}>Place Bet</Button>
                   </div>
                 </div>
               ) : (
                 <Button 
                   className="w-full mt-2" 
                   onClick={() => setSelectedBet(bet.id)}
+                  aria-label={`Bet now on ${bet.title}`}
                 >
                   Bet Now
                 </Button>
